@@ -1,5 +1,6 @@
 using auth_api.Data;
 using auth_api.Models;
+using auth_api.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,8 @@ var connString = builder.Configuration.GetConnectionString("UserConnection");
 builder.Services.AddDbContext<UserDBContext>(options => options.UseMySql(connString, ServerVersion.AutoDetect(connString)));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+builder.Services.AddScoped<StoreService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<UserDBContext>()

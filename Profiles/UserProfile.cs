@@ -4,7 +4,7 @@ using AutoMapper;
 
 namespace auth_api.Profiles;
 
-class UserProfile : Profile
+public class UserProfile : Profile
 {
 	public UserProfile()
 	{

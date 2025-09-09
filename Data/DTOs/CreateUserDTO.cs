@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace auth_api.Data.DTOs;
 
-class CreateUserDTO
+public class CreateUserDTO
 {
 	[Required]
 	public string Username { get; set; }

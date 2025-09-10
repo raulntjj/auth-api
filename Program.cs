@@ -12,6 +12,7 @@ builder.Services.AddDbContext<UserDBContext>(options => options.UseMySql(connStr
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddIdentity<User, IdentityRole>()
     .AddEntityFrameworkStores<UserDBContext>()

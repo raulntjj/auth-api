@@ -12,11 +12,12 @@ public class UserService
 	private readonly SignInManager<User> _signInManager;
 	private readonly TokenService _tokenService;
 
-	public UserService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager)
+	public UserService(IMapper mapper, UserManager<User> userManager, SignInManager<User> signInManager, TokenService tokenService)
 	{
 		_mapper = mapper;
 		_userManager = userManager;
 		_signInManager = signInManager;
+		_tokenService = tokenService;
 	}
 
 	public async Task StoreUser(CreateUserDTO createUserDTO)
@@ -25,7 +26,7 @@ public class UserService
 		await _userManager.CreateAsync(user, createUserDTO.Password);
 	}
 
-	public async Task LoginUser(LoginDTO loginDTO)
+	public async Task<string> LoginUser(LoginDTO loginDTO)
 	{
 		var result = await _signInManager.PasswordSignInAsync(loginDTO.Username, loginDTO.Password, false, false);
 
@@ -34,6 +35,15 @@ public class UserService
 			throw new Exception("Invalid Login Attempt");
 		}
 
-		// TokenService tokenService.GenerateToken(user);
+		var user = await _userManager.FindByNameAsync(loginDTO.Username);
+
+		if (user == null)
+		{
+			throw new Exception("User Not Found");
+		}
+		
+		var token = _tokenService.GenerateToken(user);
+
+		return token;
 	}
 }

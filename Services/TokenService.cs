@@ -10,15 +10,13 @@ public class TokenService
 {
   public string GenerateToken(User user)
   {
-    Claim[] claims = new Claim[]
-    {
-      new Claim(ClaimTypes.NameIdentifier, user.Id),
-      new Claim(ClaimTypes.Name, user.UserName),
-      new Claim(ClaimTypes.Email, user.Email),
-      new Claim("BirthDate", user.BirthDate.ToString("yyyy-MM-dd"))
-    };
+    Claim[] claims = [
+      new(ClaimTypes.NameIdentifier, user.Id),
+      new(ClaimTypes.Name, user.UserName),
+      new("BirthDate", user.BirthDate.ToString("yyyy-MM-dd"))
+    ];
 
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("JHSJIDHU8"));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ASDASDASDASDASDASDASD45ASDASDASDASDASDASDASDASDSSAD"));
 
     var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -27,7 +25,7 @@ public class TokenService
       claims: claims,
       signingCredentials: signingCredentials
     );
-
-    throw new NotImplementedException();
+    
+    return new JwtSecurityTokenHandler().WriteToken(token);
   }
 }

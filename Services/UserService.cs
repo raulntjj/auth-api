@@ -24,13 +24,21 @@ public class UserService
 		_tokenService = tokenService;
 	}
 
-	public async Task StoreUser(CreateUserDTO createUserDTO)
+	public async Task StoreUser(RegisterDTO registerDTO)
 	{
+		var verifyUser =
+			_userManager
+			.Users
+			.FirstOrDefault(user => user.NormalizedUserName == registerDTO.Username.ToUpper());
+
+		if (verifyUser is not null)
+			throw new Exception("User has been registred");
+			
 		User user =
-			_mapper.Map<User>(createUserDTO);
+			_mapper.Map<User>(registerDTO);
 
 		await _userManager
-			.CreateAsync(user, createUserDTO.Password);
+			.CreateAsync(user, registerDTO.Password);
 	}
 
 	public async Task<string> LoginUser(LoginDTO loginDTO)

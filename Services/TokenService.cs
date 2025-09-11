@@ -8,28 +8,37 @@ namespace auth_api.Services;
 
 public class TokenService
 {
+
+  private IConfiguration _configuration;
+    
+  public TokenService(IConfiguration configuration)
+  {
+    _configuration = configuration;
+  }
+
   public string GenerateToken(User user)
   {
     Claim[] claims =
-      [
-        new(ClaimTypes.NameIdentifier, user.Id),
-        new(ClaimTypes.Name, user.UserName),
-        new(ClaimTypes.DateOfBirth, user.BirthDate.ToString("yyyy-MM-dd"))
-      ];
+    [
+        new("Id", user.Id),
+        new("Username", user.UserName),
+        new("BirthDate", user.BirthDate.ToString("yyyy-MM-dd"))
+    ];
 
-    var key =
-      new SymmetricSecurityKey(Encoding.UTF8.GetBytes("ASDASDASDASDASDASDASD45ASDASDASDASDASDASDASDASDSSAD"));
+    var secret =
+        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SymetricSecurityKey"]));
 
     var signingCredentials =
-      new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        new SigningCredentials(secret, SecurityAlgorithms.HmacSha256);
 
     var token =
-      new JwtSecurityToken(
-        expires: DateTime.Now.AddHours(1),
-        claims: claims,
-        signingCredentials: signingCredentials
-      );
-    
-    return new JwtSecurityTokenHandler().WriteToken(token);
+        new JwtSecurityToken(
+            expires: DateTime.Now.AddHours(1),
+            claims: claims,
+            signingCredentials: signingCredentials
+        );
+
+    var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+    return tokenString;
   }
 }

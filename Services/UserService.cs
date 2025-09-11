@@ -41,8 +41,10 @@ public class UserService
 		if (!result.Succeeded)
 			throw new Exception("Invalid Login Attempt");
 
-		var user =
-			await _userManager.FindByNameAsync(loginDTO.Username);
+		var user = _signInManager
+				.UserManager
+				.Users
+				.FirstOrDefault(user => user.NormalizedUserName == loginDTO.Username.ToUpper());
 
 		if (user is null)
 			throw new Exception("User Not Found");
